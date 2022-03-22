@@ -97,7 +97,9 @@ exports.login = async (req, res) => {
     if (user && bcrypt.compareSync(req.body.password, user.password)) {
         const token = jwt.sign(
             {
+                // to fix this later
                 userId: user.id,
+                isAdmin: user.isAdmin,
             },
             secret,
             { expiresIn: '1d' }
@@ -105,5 +107,36 @@ exports.login = async (req, res) => {
         res.status(200).send({ user: user.email, token: token })
     } else {
         res.status(400).send('password is wrong!')
+    }
+}
+
+exports.getUserCount = async (req, res) => {
+
+    const userCount = await User.countDocuments((count)) => count) //fix this line tomorrow
+
+    if(!userCount) {
+        res.status(500).json({success: false})
+    }
+    res.send({
+        userCount: userCount
+    })
+}
+
+exports.deleteUser = async (req, res) => {
+    try {
+        if (!mongoose.isValidObjectId(req.params.id)) {
+            res.status(400).send('Invalid User')
+        }
+        await User.findByIdAndDelete(req.params.id)
+
+        res.status(204).json({
+            status: 'success',
+            message: 'User deleted successfully',
+        })
+    } catch (err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err,
+        })
     }
 }
