@@ -2,6 +2,8 @@ const User = require('../models/userModel')
 const jwt = require('jsonwebtoken')
 const catchAsync = require('./../utils/catchAsync')
 const mongoose = require('mongoose')
+const bcrypt = require('bcryptjs')
+const AppError = require('./../utils/appError')
 
 exports.getAllUsers = async (req, res) => {
     const users = await User.find().select('-password')
@@ -110,15 +112,31 @@ exports.login = async (req, res) => {
     }
 }
 
+// exports.login = (req, res, next) => {
+//     const { email, password } = req.body
+//     // 1) Check if email and password exits
+//     if (!email || !password) {
+//         return next(new AppError('Please provide email and password!', 400))
+//     }
+//     // 2) check if user exists and password is correct
+
+//     // const user = User.findOne/
+//     // 3) if everything is ok, send token to client
+//     const token = ''
+//     res.status(200).json({
+//         status: 'success',
+//         token,
+//     })
+// }
+
 exports.getUserCount = async (req, res) => {
+    const userCount = await User.countDocuments()
 
-    const userCount = await User.countDocuments((count)) => count) //fix this line tomorrow
-
-    if(!userCount) {
-        res.status(500).json({success: false})
+    if (!userCount) {
+        res.status(500).json({ success: false })
     }
     res.send({
-        userCount: userCount
+        userCount: userCount,
     })
 }
 

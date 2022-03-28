@@ -14,6 +14,7 @@ app.options('*', cors())
 app.use(express.json())
 app.use(morgan('tiny'))
 app.use(authJwt())
+app.use('/public/uploads', express.static(__dirname + 'public/uploads'))
 // Routes
 const productRouter = require('./routers/productRoutes')
 const categoryRouter = require('./routers/categoryRoutes')
@@ -27,7 +28,7 @@ const api = process.env.API_URL
 app.use(`${api}/products`, productRouter)
 app.use(`${api}/categories`, categoryRouter)
 app.use(`${api}/users`, userRouter)
-// app.use(`${api}/orders`, orderRouter)
+app.use(`${api}/orders`, orderRouter)
 
 mongoose
     .connect(process.env.DATABASE)
